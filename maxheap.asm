@@ -28,14 +28,20 @@ maxHeapify:
 	; left if statments
 	cmp esi, [ebp + 12]
 	jg leftJump
-	cmp [eax + esi], [eax + ebx]; compares left to heap[largest]
+	push esi
+	mov esi, [eax, esi]
+	cmp esi, [eax + ebx]; compares left to heap[largest]
+	pop esi
 	jl leftJump
 	mov ebx, esi
 	leftJump:
 	; right if statments	
 	cmp edi, [ebp + 12]
 	jg rightJump
-	cmp [eax + edi], [eax + ebx]; compares left to heap[largest]
+	push edi
+	mov edi, [eax, edi]
+	cmp edi, [eax + ebx]; compares left to heap[largest]
+	pop edi
 	jl rightJump
 	mov ebx, edi
 	rightJump:
@@ -43,10 +49,25 @@ maxHeapify:
 	cmp ebx, [ebp + 16]; compare index and largest
 	je endMaxHeapify
 	mov esi, [ebp + 16]
-
-	xor [eax + ebx], [eax + esi]; swap heap[i] and heap[largest]
-	xor [eax + esi], [eax + ebx]
-	xor [eax + ebx], [eax + esi]
+	; swap(&heap[i], &heap[largest]);
+	; eax is the array pointer
+	; ebx is the largest
+	; esi is [ebp + 16] is the index
+	mov edi, [eax + ebx]; value of largest
+	mov [eax + ebx], esi; replace value of largest in array with value at index
+	mov [eax + esi], edi
+	; call maxheapify
+	
+	; param 1 is pointer to array at ebp + 8
+	; param 2 is size of array at ebp + 12
+	; param 3 is index at ebp + 16
+	mov eax, [ebp + 16]
+	push eax
+	mov eax, [ebp + 12]
+	push eax
+	mov eax, [ebp + 8]
+	push eax
+	call maxHeapify
 
 	endMaxHeapify:
 
