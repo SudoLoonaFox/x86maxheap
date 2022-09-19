@@ -24,10 +24,32 @@ maxHeapify:
 	imul edi, 2
 	add edi, 2
 	mov ebx, [ebp + 16]; largest
-	;missing if statements
-
-
+	mov eax, [ebp + 8]; pointer to the start of array
+	; left if statments
+	cmp esi, [ebp + 12]
+	jg leftJump
+	cmp [eax + esi], [eax + ebx]; compares left to heap[largest]
+	jl leftJump
+	mov ebx, esi
+	leftJump:
+	; right if statments	
+	cmp edi, [ebp + 12]
+	jg rightJump
+	cmp [eax + edi], [eax + ebx]; compares left to heap[largest]
+	jl rightJump
+	mov ebx, edi
+	rightJump:
 	
+	cmp ebx, [ebp + 16]; compare index and largest
+	je endMaxHeapify
+	mov esi, [ebp + 16]
+
+	xor [eax + ebx], [eax + esi]; swap heap[i] and heap[largest]
+	xor [eax + esi], [eax + ebx]
+	xor [eax + ebx], [eax + esi]
+
+	endMaxHeapify:
+
 	pop esi
 	pop edi
 	pop ebx
